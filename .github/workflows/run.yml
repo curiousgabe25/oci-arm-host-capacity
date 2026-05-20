@@ -2,8 +2,8 @@ name: Try to create OCI instance
 
 on:
   schedule:
-    - cron: '*/15 * * * *'  # every 15 minutes
-  workflow_dispatch:         # also allow manual runs
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
 
 jobs:
   run-script:
