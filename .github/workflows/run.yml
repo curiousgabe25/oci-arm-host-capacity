@@ -34,9 +34,14 @@ jobs:
           OCI_MEMORY_IN_GBS: ${{ secrets.OCI_MEMORY_IN_GBS }}
           OCI_SHAPE: VM.Standard.A1.Flex
           OCI_PRIVATE_KEY_FILENAME: oci_private_key.pem
-          TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
-          TELEGRAM_USER_ID: ${{ secrets.TELEGRAM_USER_ID }}
         run: |
           echo "$OCI_PRIVATE_KEY" > oci_private_key.pem
           chmod 600 oci_private_key.pem
-          php index.php
+          OUTPUT=$(php index.php 2>&1)
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -q "Out of host capacity"; then
+            echo "::warning::Still no capacity — this is expected, will retry on next run"
+            exit 1
+          fi
+          echo "::notice::Possible success — check OCI Console immediately"
+          exit 0
